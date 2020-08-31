@@ -7,9 +7,9 @@ function ccwTriangle(l, r, combo, triangle){
   if (l == r){
     // We have found a permutation
     // Determine if permutation forms a CCW orientation
-    let v1 = vertices[combo[0]].seed;
-    let v2 = vertices[combo[1]].seed;
-    let v3 = vertices[combo[2]].seed;
+    let v1 = vornoiRegions[combo[0]].seed;
+    let v2 = vornoiRegions[combo[1]].seed;
+    let v3 = vornoiRegions[combo[2]].seed;
     if (ccw(v1, v2, v3) > 0){
       // Set up ordered vertices (Store indexes and not actual values)
       triangle.vertices = [combo[0], combo[1], combo[2]];
