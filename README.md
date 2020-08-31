@@ -9,7 +9,7 @@ This was done using p5.js. Link to the (current) final version is: https://edito
   </tr>
   <tr>
     <td><img align="center" src="Visuals/Vornoi Diagram - Demo.gif"></td>
-    <td><img align="center" src="Visuals/Island Noise.PNG"></td>
+    <td><img align="right" src="Visuals/Island Noise.PNG"></td>
   </tr>
 </table>
 
