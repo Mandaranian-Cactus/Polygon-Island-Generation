@@ -13,7 +13,7 @@ This was done using p5.js
 </td>
     </tr>
   <tr>
-  <img src="Visuals/Vornoi Diagram - Demo.gif">
+  <img align="center src="Visuals/Vornoi Diagram - Demo.gif">
 </tr>
 </table>
 
