@@ -6,6 +6,7 @@ class Island{
     this.w = w;
     this.h = h;
     this.map = [];
+    this.polygons = [];
   }
   constructIsland(){  // Constructs an island-biased 2D noise map
     // Construct map
@@ -29,7 +30,9 @@ class Island{
     } 
   }
   
-  drawVornoiIsland(vornoiRegions){  // Draws noise map with vornoi diagram as medium
+  renderVornoiIsland(vornoiRegions){ 
+    // Draws noise map with vornoi diagram as medium
+    // Also render the info of the polygons making up the island
     translate(0, height);
     scale(1, -1);
     for (let i = 3; i < vornoiRegions.length; i++) {
@@ -39,12 +42,13 @@ class Island{
       beginShape();
       stroke(200, 150, 200);
       if (vornoiRegions[i].vertices.length == 0) continue; // There still seems to be a bug where undefined vertices appear or the orientation flips horizontally
-      for (let v of vertices[i].vertices) {
+      for (let v of vornoiRegions[i].vertices) {
         vertex(v.x, v.y);
       }
       vertex(vornoiRegions[i].vertices[0].x, vornoiRegions[i].vertices[0].y);
       endShape();
       }
+      this.polygons.push(vornoiRegions[i]);
     }
   }
   
