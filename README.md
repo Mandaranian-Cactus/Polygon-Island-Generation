@@ -4,13 +4,14 @@ This was done using p5.js
 
 ![Random Text](Visuals/Polygon Island Generation - Demo.gif)
 <table>
+  <tr>
   <td>
 <img align="center" src="Visuals/Polygon Island Generation - Demo.gif">
 </td>
   <td>
 <img align="center" src="Visuals/Lloyd Relaxation - Demo.gif">
 </td>
+    </tr>
+  <img src="Visuals/Vornoi Diagram - Demo.gif">
 </table>
 
-![Contribution guidelines for this project](Visuals/Vornoi Diagram - Demo.gif)
-<img align="center" width="100" height="100" src="Cake.png">
