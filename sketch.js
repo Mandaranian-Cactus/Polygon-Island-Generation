@@ -4,9 +4,9 @@
 
 // NOTE THAT THE NEIGHBORS OF THE VORNOI REGIONS MAY SEEM INCORRECT. This is not really a "bug" or a "feature" but somewhere inbetween. Sometimes, a delunary triangle's circumcenter is outside of the screen so the vornoi diagram on screen looks incomplete. As a result, two seeds which appear non-neighbors on screen are actually neighbors is the screen size were to be expanded.
 
-// With respect to the above paragraph, I went with a different method when working with the border seperating vornoi regions. In that case, I just recorded the borders up to their intersection with the screen and didn't allow them to extend super far. This may lead to future errors tho.
+// With respect to the above paragraph, I went with a different method when working with the border seperating vornoi regions. In that case, I just recorded the borders up to their intersection with the screen and didn't allow them to extend infinetly. This may lead to future errors tho.
 
-let vertices;
+let vornoiRegions;  // Array holding info of every vornoi polygon/region
 let adjM;
 let triangulation;
 let I;
@@ -18,7 +18,7 @@ function setup() {
   I.constructIsland();
 
   // Note that dimensions for the supertriangle may lead to errors
-  vertices = [new vornoiRegion(createVector(-2 * width, -height)), new vornoiRegion(createVector(2 * width, -height)), new vornoiRegion(createVector(width, 2 * height))];
+  vornoiRegions = [new vornoiRegion(createVector(-2 * width, -height)), new vornoiRegion(createVector(2 * width, -height)), new vornoiRegion(createVector(width, 2 * height))];
 }
 
 function delTrig() {
@@ -27,9 +27,9 @@ function delTrig() {
   adjM = []; // Adjacency matrix. Records DIRECTED edges of triangles
 
   // Construct empty adjM
-  for (let i = 0; i < vertices.length; i++) {
+  for (let i = 0; i < vornoiRegions.length; i++) {
     let row = [];
-    for (let j = 0; j < vertices.length; j++) {
+    for (let j = 0; j < vornoiRegions.length; j++) {
       row.push(false);
     }
     adjM.push(row);
@@ -41,19 +41,19 @@ function delTrig() {
   triangulation.pushFront(new DequeEl(superTriangle));
 
   // Main code for delunary triangulation
-  for (let newPointIndex = 3; newPointIndex < vertices.length; newPointIndex++) {
-    let point = vertices[newPointIndex].seed;
+  for (let newPointIndex = 3; newPointIndex < vornoiRegions.length; newPointIndex++) {
+    let point = vornoiRegions[newPointIndex].seed;
     let badTriangles = []; // Contains triangles that contain the new point (a.k.a  triangles who breaks the delunary triangulation property)
     let polygon = []; // Contains edges which are to make new triangles with the new point
 
     // Find all bad triangles and remove from triangulation
-    // O(n) time where n is the length of vertices. (Max length of triangulation is n)
+    // O(n) time where n is the length of vornoiRegions. (Max length of triangulation is n)
     let length = triangulation.length;
     for (let i = length - 1; i >= 0; i--) {
       let triangle = triangulation.popFront();
-      let a = vertices[triangle.vertices[0]].seed;
-      let b = vertices[triangle.vertices[1]].seed;
-      let c = vertices[triangle.vertices[2]].seed;
+      let a = vornoiRegions[triangle.vertices[0]].seed;
+      let b = vornoiRegions[triangle.vertices[1]].seed;
+      let c = vornoiRegions[triangle.vertices[2]].seed;
       let d = point;
 
       // Use determinant to find if point lies inside circle
@@ -160,18 +160,18 @@ function drawVisual() {
 
   // Draw circles
   fill(255, 163, 230);
-  for (let v of vertices) circle(v.seed.x, v.seed.y, 15);
+  for (let v of vornoiRegions) circle(v.seed.x, v.seed.y, 15);
 }
 
 function draw() {
-  let newPoints = [vertices[0], vertices[1], vertices[2]];
+  let newPoints = [vornoiRegions[0], vornoiRegions[1], vornoiRegions[2]];
   if (keyIsDown(69)) {
-    for (let i = 3; i < vertices.length; i++) {
-      let region = vertices[i];
+    for (let i = 3; i < vornoiRegions.length; i++) {
+      let region = vornoiRegions[i];
       newPoints.push(new vornoiRegion(findCentroid(region.vertices)));
     }
-    vertices = [];
-    for (let el of newPoints) vertices.push(el)
+    vornoiRegions = [];
+    for (let el of newPoints) vornoiRegions.push(el)
     delTrig();
     drawVisual();
   }
@@ -183,7 +183,7 @@ function drawCircumCircle() {
   for (let i = 0; i < length; i++) {
     let triangle = triangulation.popFront();
     triangulation.pushBack(new DequeEl(triangle));
-    let r = dist(triangle.circumCenter.x, triangle.circumCenter.y, vertices[triangle.vertices[0]].seed.x, vertices[triangle.vertices[0]].seed.y);
+    let r = dist(triangle.circumCenter.x, triangle.circumCenter.y, vornoiRegions[triangle.vertices[0]].seed.x, vornoiRegions[triangle.vertices[0]].seed.y);
     stroke(50, 50, 255)
     noFill();
 
@@ -202,10 +202,10 @@ function drawDirectedEdges() {
     let t = triangulation.popFront();
     triangulation.pushBack(new DequeEl(t));
     for (let i = 0; i < t.vertices.length; i++) {
-      if (i == 2) nextP = vertices[t.vertices[0]].seed;
-      else nextP = vertices[t.vertices[i + 1]].seed;
+      if (i == 2) nextP = vornoiRegions[t.vertices[0]].seed;
+      else nextP = vornoiRegions[t.vertices[i + 1]].seed;
 
-      curP = vertices[t.vertices[i]].seed;
+      curP = vornoiRegions[t.vertices[i]].seed;
       line(curP.x, curP.y, nextP.x, nextP.y);
     }
   }
@@ -219,9 +219,9 @@ function constructVornoiDiagram() {
   for (let i = 0; i < length; i++) {
     let triangle = triangulation.popFront();
     triangulation.pushBack(new DequeEl(triangle))
-    let v1 = vertices[triangle.vertices[0]].seed;
-    let v2 = vertices[triangle.vertices[1]].seed;
-    let v3 = vertices[triangle.vertices[2]].seed;
+    let v1 = vornoiRegions[triangle.vertices[0]].seed;
+    let v2 = vornoiRegions[triangle.vertices[1]].seed;
+    let v3 = vornoiRegions[triangle.vertices[2]].seed;
     let e1 = p5.Vector.sub(v2, v1);
     let dx = e1.x;
     let dy = e1.y;
@@ -241,7 +241,7 @@ function constructVornoiDiagram() {
   }
 
   // Start off by reseting info
-  for (let v of vertices) {
+  for (let v of vornoiRegions) {
     v.neighbors = [];
     v.vertices = [];
   }
@@ -261,7 +261,7 @@ function constructVornoiDiagram() {
         let otherTriangle = adjM[nextV][curV];
         // Setup the neighbors of the vornoi region
         // We don't given any info to the "nextV" since edge is shared so "nextV" will be "curV" in another iteration
-        vertices[curV].neighbors.push(vertices[nextV]);
+        vornoiRegions[curV].neighbors.push(vornoiRegions[nextV]);
 
         // Here, we will encounter one of 3 seperate cases: out-out, in-in, out-in
         // A circumcenter is considered "out" if it lies outside of the screen
@@ -331,8 +331,8 @@ function constructVornoiDiagram() {
         if (p1 != null && p2 != null) {
           // Setup vertices for vornoi region border
           // We don't give any info to "nextV" since edge is shared
-          if (vertices[curV].vertices.indexOf(p1) == -1) vertices[curV].vertices.push(p1);
-          if (vertices[curV].vertices.indexOf(p2) == -1) vertices[curV].vertices.push(p2);
+          if (vornoiRegions[curV].vertices.indexOf(p1) == -1) vornoiRegions[curV].vertices.push(p1);
+          if (vornoiRegions[curV].vertices.indexOf(p2) == -1) vornoiRegions[curV].vertices.push(p2);
 
         }
       } else {
@@ -341,10 +341,10 @@ function constructVornoiDiagram() {
         // "infinite edges" will always point outwards to the boarders so we use our triangle's ccw property alongside cross product in order to consturct vectors that point outwards
         // In this case, we are desiring a clockwise orientation
         // In addition, we would also convert the "infinite edge" into a line segment by finding its intersection with one of the screen's border
-        let edgeMid = p5.Vector.add(vertices[curV].seed, vertices[nextV].seed).div(2);
+        let edgeMid = p5.Vector.add(vornoiRegions[curV].seed, vornoiRegions[nextV].seed).div(2);
         // circle(edgeMid.x, edgeMid.y, 20);
         let e1 = p5.Vector.sub(edgeMid, triangle.circumCenter); // Vector from circumCenter to edgeMid (Or the vector that points outwards to screen edge)
-        let e2 = p5.Vector.sub(vertices[nextV].seed, vertices[curV].seed); // Vector from curV to nextV
+        let e2 = p5.Vector.sub(vornoiRegions[nextV].seed, vornoiRegions[curV].seed); // Vector from curV to nextV
         if (e2.cross(e1).z > 0) {
           // Orientation was counter clockwise orientation so we multiply by -1 to get clockwise orientation
           e1.mult(-1);
@@ -374,30 +374,30 @@ function constructVornoiDiagram() {
         // We draw the line to the longest intercept however I'm lazy so I just draw all possible line (Shouldn't be that bad since we only have 2 lines to draw max)
         // Note that it is also possible to have no intercept (When the circumcenter is outside and directed edge points away from screen)
         // Setup the neighbors of the vornoi region
-        vertices[curV].neighbors.push(vertices[nextV]);
-        vertices[nextV].neighbors.push(vertices[curV]);
+        vornoiRegions[curV].neighbors.push(vornoiRegions[nextV]);
+        vornoiRegions[nextV].neighbors.push(vornoiRegions[curV]);
 
         // Setup vertices for vornoi region border
         // Since edge is unshared, we provide info to "nextV" as well as "curV"
         for (let intersection of intersects) {
-          if (vertices[curV].vertices.indexOf(triangle.circumCenter) == -1) vertices[curV].vertices.push(triangle.circumCenter);
-          if (vertices[curV].vertices.indexOf(intersection) == -1) vertices[curV].vertices.push(intersection);
+          if (vornoiRegions[curV].vertices.indexOf(triangle.circumCenter) == -1) vornoiRegions[curV].vertices.push(triangle.circumCenter);
+          if (vornoiRegions[curV].vertices.indexOf(intersection) == -1) vornoiRegions[curV].vertices.push(intersection);
 
-          if (vertices[nextV].vertices.indexOf(triangle.circumCenter) == -1) vertices[nextV].vertices.push(triangle.circumCenter);
-          if (vertices[nextV].vertices.indexOf(intersection) == -1) vertices[nextV].vertices.push(intersection);
+          if (vornoiRegions[nextV].vertices.indexOf(triangle.circumCenter) == -1) vornoiRegions[nextV].vertices.push(triangle.circumCenter);
+          if (vornoiRegions[nextV].vertices.indexOf(intersection) == -1) vornoiRegions[nextV].vertices.push(intersection);
         }
       }
     }
   }
 
   // Sort the vornoi vertices in CCW order
-  for (let i = 3; i < vertices.length; i++) { // We start at index 3 to avoid the super Triangle
-    vertices[i].vertices = ccwSort(vertices[i].vertices);
+  for (let i = 3; i < vornoiRegions.length; i++) { // We start at index 3 to avoid the super Triangle
+    vornoiRegions[i].vertices = ccwSort(vornoiRegions[i].vertices);
   }
 
   // Fill in corners
-  for (let i = 3; i < vertices.length; i++) {
-    vertices[i].vertces = addCorners(vertices[i].vertices, width, height);
+  for (let i = 3; i < vornoiRegions.length; i++) {
+    vornoiRegions[i].vertces = addCorners(vornoiRegions[i].vertices, width, height);
   }
 }
 
@@ -406,14 +406,14 @@ function drawVornoiDiagram() {
   // All we do is draw the borders seperating every vornoi region
 
   stroke(255, 50, 50);
-  for (let i = 3; i < vertices.length; i++) { // Start at index 3 to avoid working with super triangle
+  for (let i = 3; i < vornoiRegions.length; i++) { // Start at index 3 to avoid working with super triangle
     let prev;
     let cur;
-    for (let j = 0; j < vertices[i].vertices.length + 1; j++) { // "+1" to account for circular indexing
-      if (j == 0) prev = vertices[i].vertices[j];
+    for (let j = 0; j < vornoiRegions[i].vertices.length + 1; j++) { // "+1" to account for circular indexing
+      if (j == 0) prev = vornoiRegions[i].vertices[j];
       else {
-        if (j == vertices[i].vertices.length) cur = vertices[i].vertices[0];
-        else cur = vertices[i].vertices[j];
+        if (j == vornoiRegions[i].vertices.length) cur = vornoiRegions[i].vertices[0];
+        else cur = vornoiRegions[i].vertices[j];
         line(prev.x, prev.y, cur.x, cur.y);
         prev = cur;
       }
@@ -424,20 +424,20 @@ function drawVornoiDiagram() {
 function mouseClicked() {
   let mx = mouseX;
   let my = height - mouseY;
-  vertices.push(new vornoiRegion(createVector(mx, my)));
+  vornoiRegions.push(new vornoiRegion(createVector(mx, my)));
   delTrig();
   drawVisual();
 }
 
 function keyPressed() {
   if (key == "e") { // Perform Lloyd Relaxation
-    let newPoints = [vertices[0], vertices[1], vertices[2]];
-    for (let i = 3; i < vertices.length; i++) {
-      let region = vertices[i];
+    let newPoints = [vornoiRegions[0], vornoiRegions[1], vornoiRegions[2]];
+    for (let i = 3; i < vornoiRegions.length; i++) {
+      let region = vornoiRegions[i];
       newPoints.push(new vornoiRegion(findCentroid(region.vertices)));
     }
-    vertices = [];
-    for (let el of newPoints) vertices.push(el)
+    vornoiRegions = [];
+    for (let el of newPoints) vornoiRegions.push(el)
     delTrig();
     drawVisual();
 
@@ -445,7 +445,7 @@ function keyPressed() {
   if (key == " ") {  // Show every vertex making up the vornoi diagram
     translate(0, height)
     scale(1, -1)
-    for (let r of vertices) {
+    for (let r of vornoiRegions) {
       for (let v of r.vertices) {
         fill(50, 50, 50)
         circle(v.x, v.y, 30)
@@ -456,16 +456,16 @@ function keyPressed() {
     for (let i = 0; i < 20; i++) {
       let x = int(random(0, width));
       let y = int(random(0, height));
-      vertices.push(new vornoiRegion(createVector(x, y)));
+      vornoiRegions.push(new vornoiRegion(createVector(x, y)));
     }
     delTrig();
     drawVisual();
   }
   if (key == "w") {  // Draws the borders making up the island
-    I.drawVornoiIsland(vertices);
+    I.renderVornoiIsland(vornoiRegions);
   }
   if (key == "t") {  // Reset vornoi diagram
-    vertices = [vertices[0], vertices[1], vertices[2]];
+    vornoiRegions = [vornoiRegions[0], vornoiRegions[1], vornoiRegions[2]];
     delTrig();
     drawVisual();
   }
