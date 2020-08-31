@@ -13,7 +13,8 @@ This was done using p5.js
     </tr>
   <tr>
       <td>
-      <img align="center" src="Visuals/Lloyd Relaxation - Demo.gif">
+        <img align="center src="Visuals/Vornoi Diagram - Demo.gif">
+      <img align="center" src="Visuals/Vornoi Diagram - Demo.gif">
       </td>
 </tr>
   
