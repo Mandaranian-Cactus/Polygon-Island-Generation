@@ -11,6 +11,7 @@ This was done using p5.js
   <td>
 <img align="center" src="Visuals/Lloyd Relaxation - Demo.gif">
 </td>
+    <td>  <img align="center src="Visuals/Vornoi Diagram - Demo.gif"></td>
     </tr>
   <tr>
   <img align="center src="Visuals/Vornoi Diagram - Demo.gif">
