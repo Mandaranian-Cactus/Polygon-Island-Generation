@@ -2,7 +2,7 @@
 An implementation of vornoi diagrams using Boywer Watson O(n^2) algorithim.
 This was done using p5.js
 
-![Random Text](4.gif)
+![Random Text](Visuals/Polygon Island Generation - Demo.gif)
 
 <img align="center" width="300" height="300" src="Visuals/Lloyd Relaxation - Demo.gif">
 
