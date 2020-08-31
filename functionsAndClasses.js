@@ -232,3 +232,4 @@ class Edge{
     this.vertices = [v1, v2];
   }
 }
+
