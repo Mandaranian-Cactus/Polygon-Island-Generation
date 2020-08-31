@@ -7,5 +7,5 @@ This was done using p5.js
 <img align="center" width="300" height="300" src="Visuals/Polygon Island Generation - Demo.gif">
 <img align="center" width="300" height="300" src="Visuals/Lloyd Relaxation - Demo.gif">
 
-![Contribution guidelines for this project](Cake.png)
+![Contribution guidelines for this project](Visuals/Vornoi Diagram - Demo.gif)
 <img align="center" width="100" height="100" src="Cake.png">
