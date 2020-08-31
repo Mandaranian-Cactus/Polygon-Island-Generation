@@ -5,7 +5,7 @@ This was done using p5.js
 ![Random Text](Visuals/Polygon Island Generation - Demo.gif)
 <table>
   <td>
-<img align="center" width=50% height=50% src="Visuals/Polygon Island Generation - Demo.gif">
+<img align="center" src="Visuals/Polygon Island Generation - Demo.gif">
 </td>
   <td>
 <img align="center" width=50% height=50% src="Visuals/Lloyd Relaxation - Demo.gif">
