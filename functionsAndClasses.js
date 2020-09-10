@@ -224,6 +224,7 @@ class vornoiRegion{
     this.seed = seed;
     this.vertices = [];
     this.neighbors = [];
+    this.lvl = null; // Used for elevation map
   }
 }
 
