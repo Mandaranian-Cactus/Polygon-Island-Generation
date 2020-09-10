@@ -11,5 +11,12 @@ This was done using p5.js. Link to the (current) final version is: https://edito
     <td><img align="center" src="Visuals/Vornoi Diagram - Demo.gif"></td>
     <td><img src="Visuals/Island Noise.PNG"></td>
   </tr>
+  <tr>
+    <td><img align="center" src="Visuals/BFS height.png"></td>
+    <td><img src="Visuals/Island biased 2D noise.png"></td>
+  </tr>
+    <td><img src="Visuals/Final.png"></td>
+  <tr>
+  </tr>
 </table>
 
