@@ -14,7 +14,7 @@ let I;
 function setup() {
   createCanvas(800, 800);
 
-  I = new Island(0.2, 3, 1, width, height);
+  I = new Island(0.025, random(0,50), random(0,50), width + 1, height + 1);
   I.constructIsland();
 
   // Note that dimensions for the supertriangle may lead to errors
@@ -142,10 +142,6 @@ function delTrig() {
   }
 
 
-  // print("done")
-  // print(triangulation)
-  // print("")
-  // for (let row of adjM) print(row)
 }
 
 function drawVisual() {
@@ -154,11 +150,16 @@ function drawVisual() {
   scale(1, -1);
 
   constructVornoiDiagram();
-  drawVornoiDiagram();
-  drawCircumCircle();
+  // drawVornoiDiagram();
+  // drawCircumCircle();
   // drawDirectedEdges();
+  drawVornoiSeeds();
+  
+}
 
-  // Draw circles
+function drawVornoiSeeds(){
+  // Draw vornoi seeds
+  stroke(0);
   fill(255, 163, 230);
   for (let v of vornoiRegions) circle(v.seed.x, v.seed.y, 15);
 }
@@ -335,7 +336,8 @@ function constructVornoiDiagram() {
           if (vornoiRegions[curV].vertices.indexOf(p2) == -1) vornoiRegions[curV].vertices.push(p2);
 
         }
-      } else {
+      } 
+      else {
         // The edge is unshared so we assume that it extends to a screen edge
         // We call these edges "infinite edges". They are special since they will got on indefenitly
         // "infinite edges" will always point outwards to the boarders so we use our triangle's ccw property alongside cross product in order to consturct vectors that point outwards
@@ -397,7 +399,7 @@ function constructVornoiDiagram() {
 
   // Fill in corners
   for (let i = 3; i < vornoiRegions.length; i++) {
-    vornoiRegions[i].vertces = addCorners(vornoiRegions[i].vertices, width, height);
+    vornoiRegions[i].vertices = addCorners(vornoiRegions[i].vertices, width, height);
   }
 }
 
@@ -425,8 +427,18 @@ function mouseClicked() {
   let mx = mouseX;
   let my = height - mouseY;
   vornoiRegions.push(new vornoiRegion(createVector(mx, my)));
+  
+  // Clear data and redo delunary triangulation and doul graph processing
+  let newPoints = [vornoiRegions[0], vornoiRegions[1], vornoiRegions[2]];
+  for (let i = 3; i < vornoiRegions.length; i++) {
+    let region = vornoiRegions[i];
+    newPoints.push(new vornoiRegion(region.seed));
+  }
+  vornoiRegions = [];
+  for (let el of newPoints) vornoiRegions.push(el)
   delTrig();
   drawVisual();
+
 }
 
 function keyPressed() {
@@ -440,15 +452,14 @@ function keyPressed() {
     for (let el of newPoints) vornoiRegions.push(el)
     delTrig();
     drawVisual();
-
   }
   if (key == " ") {  // Show every vertex making up the vornoi diagram
     translate(0, height)
     scale(1, -1)
     for (let r of vornoiRegions) {
       for (let v of r.vertices) {
-        fill(50, 50, 50)
-        circle(v.x, v.y, 30)
+        fill(50, 50, 10)
+        circle(v.x, v.y, 10)
       }
     }
   }
@@ -458,15 +469,27 @@ function keyPressed() {
       let y = int(random(0, height));
       vornoiRegions.push(new vornoiRegion(createVector(x, y)));
     }
+
+    // Clear data and redo delunary triangulation and doul graph processing
+    let newPoints = [vornoiRegions[0], vornoiRegions[1], vornoiRegions[2]];
+    for (let i = 3; i < vornoiRegions.length; i++) {
+      let region = vornoiRegions[i];
+      newPoints.push(new vornoiRegion(region.seed));
+    }
+    vornoiRegions = [];
+    for (let el of newPoints) vornoiRegions.push(el)
     delTrig();
     drawVisual();
-  }
-  if (key == "w") {  // Draws the borders making up the island
-    I.renderVornoiIsland(vornoiRegions);
+    
   }
   if (key == "t") {  // Reset vornoi diagram
     vornoiRegions = [vornoiRegions[0], vornoiRegions[1], vornoiRegions[2]];
     delTrig();
     drawVisual();
+  }
+  if (key =="w"){  // Draw the island
+    I.setupTerrain(vornoiRegions);
+    I.setupElevation(vornoiRegions);
+    I.renderVornoiIsland(vornoiRegions, [249, 146, 69]);
   }
 }
